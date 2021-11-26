@@ -2,6 +2,51 @@ import random
 import time
 
 
+
+
+
+
+class Lift:
+    aantal_etages = 0                                                                                                # the number of floors
+    register_lijst = []                                                                                                  # the list of customers in the elevator
+    hudige_etage = 0                                                                                                   # the current floor of the elevator
+    omhoog = 1                                                                                                              # moves the elevator up
+    omlaag = -1                                                                                                           # moves the elevator down
+
+    def __init__(self, aantal_etages, register_lijst):
+        self.aantal_etages = aantal_etages
+        self.register_lijst = register_lijst
+
+
+    def klant_registreren(self, klanten):                                                                             # customer goes into elevator
+        for reg in klanten:
+            self.register_lijst.append(reg)
+
+
+class Klant:
+    hudige_etage = 0                                                                                                   # the current floor of the elevator
+    bestemming_verdieping = 0                                                                                               # the destination floor of the elevator
+    klantid = 0                                                                                                      # the customers ID
+    in_lift = False                                                                                                 # denotes whether customer is in the elevator
+    voltooid = False                                                                                                    # denotes whether customer has reached the destination floor
+    klant_richting = 0
+
+    def __init__(self, klantid, etages):                                                                             # initilize Customer class
+        self.klantid = klantid                                                                                    # assigns self.customerID to customerID
+        self.hudige_etage = random.randint(1, etages)                                                                  # assigns self.current_floor to random int between 1 and floors entered
+        self.bestemming_verdieping = random.randint(1, etages)                                                              # assigns seslf.destination_floor to random int between 1 and floors entered
+        while self.bestemming_verdieping == self.hudige_etage:
+            self.bestemming_verdieping = random.randint(1, etages)
+        if self.hudige_etage < self.bestemming_verdieping:
+            self.klant_richting = 1
+        else:
+            self.klant_richting = -1
+
+
+
+
+
+
 class Gebouw:                                                                                                                         # defines class building
     aantal_etages = 3                                                                                                                # sets number_of_floors variable to 0
     Klanten_lijst = []                                                                                                                  # creates an empty array for customer_list
@@ -71,48 +116,6 @@ class Gebouw:                                                                   
             print('Klant. ID:',stuck.klantid,'Bestemming. verdiping:',stuck.bestemming_verdieping,'Huidge. verdiping:',stuck.hudige_etage,'In lift',stuck.in_lift,'Richting',stuck.klant_richting)
 
 
-class Lift:
-    aantal_etages = 0                                                                                                # the number of floors
-    register_lijst = []                                                                                                  # the list of customers in the elevator
-    hudige_etage = 0                                                                                                   # the current floor of the elevator
-    omhoog = 1                                                                                                              # moves the elevator up
-    omlaag = -1                                                                                                           # moves the elevator down
-
-    def __init__(self, aantal_etages, register_lijst):
-        self.aantal_etages = aantal_etages
-        self.register_lijst = register_lijst
-
-    def beweeg(self):                                                                                                     # method to move the elevator by 1 floor
-        pass;
-
-    def klant_registreren(self, klanten):                                                                             # customer goes into elevator
-        for reg in klanten:
-            self.register_lijst.append(reg)
-
-
-
-    def klant_annuleren(self, Klanten):                                                                               # customer goes out of the elevator
-        pass;
-
-
-class Klant:
-    hudige_etage = 0                                                                                                   # the current floor of the elevator
-    bestemming_verdieping = 0                                                                                               # the destination floor of the elevator
-    klantid = 0                                                                                                      # the customers ID
-    in_lift = False                                                                                                 # denotes whether customer is in the elevator
-    voltooid = False                                                                                                    # denotes whether customer has reached the destination floor
-    klant_richting = 0
-
-    def __init__(self, klantid, etages):                                                                             # initilize Customer class
-        self.klantid = klantid                                                                                    # assigns self.customerID to customerID
-        self.hudige_etage = random.randint(1, etages)                                                                  # assigns self.current_floor to random int between 1 and floors entered
-        self.bestemming_verdieping = random.randint(1, etages)                                                              # assigns seslf.destination_floor to random int between 1 and floors entered
-        while self.bestemming_verdieping == self.hudige_etage:
-            self.bestemming_verdieping = random.randint(1, etages)
-        if self.hudige_etage < self.bestemming_verdieping:
-            self.klant_richting = 1
-        else:
-            self.klant_richting = -1
 
 
 def main():                                                                                                             # main method
@@ -126,5 +129,4 @@ def main():                                                                     
 
 
 if __name__ == "__main__":
-    # header()
     main()
