@@ -28,11 +28,12 @@ class Gebouw:                                                                   
 
         #ELEVATOR MOVING UP LOOP
         while (self.lift.hudige_etage < self.lift.aantal_etages):
-            self.lift.hudige_etage +=1
+
             print('LIFT BEWEEGT OMHOOG')
             print(len(self.Klanten_lijst),'Klanten in de lift.')
             print('***********************************************')
             print('Etage',self.lift.hudige_etage)
+            self.lift.hudige_etage += 1
 
             for klant in self.Klanten_lijst:                                                                                             # Loop for each instance of Custumer in customer_list
                 if (self.lift.hudige_etage == klant.hudige_etage) & klant.klant_richting == 1:
@@ -51,6 +52,7 @@ class Gebouw:                                                                   
             print('LIFT DIE NAAR BENEDEN GAAT')
             print('++++++++++++++++++++++++++++++++++++++++++++++++++++')
             print('Etage',self.lift.hudige_etage)
+
 
             for klant in self.Klanten_lijst:
                 if (klant.in_lift == True):
