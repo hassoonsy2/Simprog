@@ -3,38 +3,35 @@ import time
 
 
 
-
-
-
 class Lift:
-    aantal_etages = 0                                                                                                # the number of floors
-    register_lijst = []                                                                                                  # the list of customers in the elevator
-    hudige_etage = 0                                                                                                   # the current floor of the elevator
-    omhoog = 1                                                                                                              # moves the elevator up
-    omlaag = -1                                                                                                           # moves the elevator down
+    aantal_etages = 0           # Het aantal etage's
+    register_lijst = []         # De lijst van klanten in de lift
+    hudige_etage = 0            # Het huidige etage van de lift
+    omhoog = 1                  # het bewegen van de lift omhoog
+    omlaag = -1                 #het bewegen van de lift omlaag
 
     def __init__(self, aantal_etages, register_lijst):
         self.aantal_etages = aantal_etages
         self.register_lijst = register_lijst
 
 
-    def klant_registreren(self, klanten):                                                                             # customer goes into elevator
+    def klant_registreren(self, klanten):     # klant gaat de lift in
         for reg in klanten:
             self.register_lijst.append(reg)
 
 
 class Klant:
-    hudige_etage = 0                                                                                                   # the current floor of the elevator
-    bestemming_verdieping = 0                                                                                               # the destination floor of the elevator
-    klantid = 0                                                                                                      # the customers ID
-    in_lift = False                                                                                                 # denotes whether customer is in the elevator
-    voltooid = False                                                                                                    # denotes whether customer has reached the destination floor
+    hudige_etage = 0                  # het huidige etage van de klant
+    bestemming_verdieping = 0         # de gewilde bestemming van de klant
+    klantid = 0                       # de ID van de klant
+    in_lift = False                   # aangeven of de klant in de lift is
+    voltooid = False                  # aangeven of de klant zijn bestemming heeft bereikt
     klant_richting = 0
 
-    def __init__(self, klantid, etages):                                                                             # initilize Customer class
-        self.klantid = klantid                                                                                    # assigns self.customerID to customerID
-        self.hudige_etage = random.randint(1, etages)                                                                  # assigns self.current_floor to random int between 1 and floors entered
-        self.bestemming_verdieping = random.randint(1, etages)                                                              # assigns seslf.destination_floor to random int between 1 and floors entered
+    def __init__(self, klantid, etages):
+        self.klantid = klantid                                        # self.customerID toewijzen aan customerID
+        self.hudige_etage = random.randint(1, etages)                 # self.current_floor toewijzen aan random int tussen  1 en  etage ingevoerd
+        self.bestemming_verdieping = random.randint(1, etages)        # seslf.destination_floor toewijzen aan random int tussen 1 en  etage ingevoerd
         while self.bestemming_verdieping == self.hudige_etage:
             self.bestemming_verdieping = random.randint(1, etages)
         if self.hudige_etage < self.bestemming_verdieping:
@@ -47,28 +44,27 @@ class Klant:
 
 
 
-class Gebouw:                                                                                                                         # defines class building
-    aantal_etages = 3                                                                                                                # sets number_of_floors variable to 0
-    Klanten_lijst = []                                                                                                                  # creates an empty array for customer_list
-    lift = 0                                                                                                                        # sets elevator variable to 0
-
+class Gebouw:
+    aantal_etages = 3   # stel de variabele aantal_etages in op 3
+    Klanten_lijst = []  # maakt een lege lijst voor Klanten_lijst
+    lift = 0            # stel de variable lift op 0
     def __init__(self, etages, klanten):
-        self.Aantal_etages = etages                                                                                                  # assigns floors entered to number_of_floors
-        for klantid in range(1, klanten + 1):                                                                                      # assigns number of customers entered to customer_list in order
-            new = Klant(klantid,self.Aantal_etages)                                                                            # creates an instance called new of Customer class for number of customers entered in input
-            self.Klanten_lijst.append(new)                                                                                              # appends new instance of customer to customer_list
-        self.Klanten_lijst.sort(key = lambda x: x.hudige_etage)                                                                        # sorts customer_list by current_floor customer is on                                               # prints
-        self.lift = Lift(etages,self.Klanten_lijst)                                                                             # creates instance of elevator with inputted floors and assigns customer_list to register_list                                                                            # prints
-        self.run()                                                                                                                      # runs run method below
+        self.Aantal_etages = etages                                      # ingevoerde etage toewijzen aan number_of_floors
+        for klantid in range(1, klanten + 1):                            # toegevoegde aantal klanten toewijzen aan to Klanten_lijst
+            new = Klant(klantid,self.Aantal_etages)                      # maakt een instantie met de naam new van Klant class voor het aantal ingevoerde klanten
+            self.Klanten_lijst.append(new)                               # appends new instance aan Klanten_lijst
+        self.Klanten_lijst.sort(key = lambda x: x.hudige_etage)          # sorteer Klanten_lijst bij hudige_etage                                               # prints
+        self.lift = Lift(etages,self.Klanten_lijst)                      # maakt een instantie van lift met ingevoegde etage's en wijs Klanten_lijst toe aan register_lijst                                                                            # prints
+        self.run()
 
-    def run(self):                                                                                                                      # method to operate the elevator
-        print('************** LIFT START NU **************')                                                      # prints
-        print('Er zijn %d klanten in het gebouw' % (len(self.Klanten_lijst)))                                                     # prints
-        aantal_klanten = len(self.Klanten_lijst)                                                                                   # assigns current number of customers to number_of_customers variable
-        self.output()                                                                                                                   # runs output method below
+    def run(self):                                                                 # methode om de lift te bedienen
+        print('************** LIFT START NU **************')
+        print('Er zijn %d klanten in het gebouw' % (len(self.Klanten_lijst)))
+        aantal_klanten = len(self.Klanten_lijst)                                   # wijs huidige aantal van klanten toe aan de variable aantal_klanten
+        self.output()
 
     def output(self):
-        for Klant in self.Klanten_lijst:                                                                                                   #prints lists of customers in building and their details
+        for Klant in self.Klanten_lijst:                        #print lijsten af van klanten in het gebouw en hun gegevens
             print("Klant",Klant.klantid,"is op de vloer",Klant.hudige_etage,"en wil naar",Klant.bestemming_verdieping)
 
         #ELEVATOR MOVING UP LOOP
@@ -80,7 +76,7 @@ class Gebouw:                                                                   
             print('Etage',self.lift.hudige_etage)
             self.lift.hudige_etage += 1
 
-            for klant in self.Klanten_lijst:                                                                                             # Loop for each instance of Custumer in customer_list
+            for klant in self.Klanten_lijst:                              # Loop voor elk instantie van Klant in Klanten_lijst
                 if (self.lift.hudige_etage == klant.hudige_etage) & klant.klant_richting == 1:
                     klant.in_lift = True
                     print('Klant',klant.klantid,'is de lift ingegaan')
@@ -107,9 +103,9 @@ class Gebouw:                                                                   
                     self.Klanten_lijst.remove(klant)
                     print('Klant',klant.klantid,'heeft hun bestemming bereikt')
 
-        print('Er Zijn ',len(self.Klanten_lijst),'opgesloten in de lift')                                                            #prints
+        print('Er Zijn ',len(self.Klanten_lijst),'opgesloten in de lift')
         print('Er zijn',len(Lift.register_lijst),'mensen die nog op het register staan')
-        print('Lift run is gedaan!!!')                                                                                                #prints
+        print('Lift run is gedaan!!!')
 
         print('KLANTEN DIE IN LIFT zitten, ZIJN HIERONDER:')
         for stuck in self.Klanten_lijst:
@@ -118,11 +114,11 @@ class Gebouw:                                                                   
 
 
 
-def main():                                                                                                             # main method
-    try:                                                                                                                # try/except for user input menu
-        etages = 3                                                             # enter floors and assign to floors
-        Klanten = int(input('Vul het aantal klanten in: '))                                                           # enter customers and assign to customers
-        gebouw = Gebouw(etages, Klanten)  # instance of building created with inputs of floors and customers      # create instance of Building class (building)
+def main():
+    try:
+        etages = 3                                                             # etages invoeren en toewijzen aan etages
+        Klanten = int(input('Vul het aantal klanten in: '))                    # klanten invoeren en toewijzen aan klanten
+        gebouw = Gebouw(etages, Klanten)                                       # instantie van gebouw gemaakt met invoer van verdiepingen en klanten
     except ValueError:
         print('U HEBT GEEN NUMMER INGEVOERD. OPNIEUW BEGINNEN.')
         main()
