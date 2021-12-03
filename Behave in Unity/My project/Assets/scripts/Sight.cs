@@ -2,45 +2,61 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public class VisionEventArgs
+{
+    public Collider collider;
+}
+
 public class Sight : MonoBehaviour
 {
-    [SerializeField] float angle = 60f;
-    [SerializeField] float distance = 20f;
-    [SerializeField] float aspect = 2f;
-    [SerializeField] Color gizmocolor = Color.red;
-    [SerializeField] LayerMask layerMask;
-    HashSet<Collider> inSight, lastInSight;
+    [SerializeField] private Camera camera;
 
+    private const Modality MODALITY = Modality.SIGHT;
+    [SerializeField] private float angle = 60f;
+    [SerializeField] private float distance = 50f;
+    [SerializeField] private float aspect = 2f;
+    [SerializeField] private Color gizmoColor = Color.red;
+    [SerializeField] private LayerMask layerMask;
+    internal HashSet<Collider> inSight;
+    private HashSet<Collider> lastInSight;
+    private float coneRadius;
 
-    Collider[] overlaps;
+    public delegate void VisionEventHandler(object sender, VisionEventArgs args);
+    public event VisionEventHandler OnEnterVision, OnLeaveVision;
 
-   
     void Awake()
     {
         inSight = new HashSet<Collider>();
-        
+        coneRadius = Mathf.Tan(Mathf.Deg2Rad * angle / 2f) * distance;
     }
-    RaycastHit hitInfo;
 
-    void Fixedupdate()
+    private RaycastHit hitInfo;
+    // private RaycastHit[] coneHits;
+    private Collider coneHitCollider;
+    private List<Collider> overlaps;
+
+    void FixedUpdate()
     {
         lastInSight = new HashSet<Collider>(inSight);
-        overlaps = Physics.OverlapSphere(transform.position, distance, layerMask);
-        foreach (Collider collider in overlaps)
 
+        overlaps = Cone.OverlapCone(camera, transform.position, transform.rotation, transform.lossyScale, distance, angle, aspect, layerMask);
+        foreach (Collider coneHitCollider in overlaps)
+        // coneHits = ConeCast.ConeCastAll(transform.position, coneRadius, transform.forward, distance, angle);
+        // foreach (RaycastHit coneHit in coneHits)
         {
-            if(Physics.Raycast(transform.position, collider.transform.position - transform.position, out hitInfo, distance, layerMask)
-                && hitInfo.collider == collider)
+            // coneHitCollider = coneHit.collider;
+            if (Physics.Raycast(transform.position, coneHitCollider.transform.position - transform.position, out hitInfo, distance, layerMask)
+                && hitInfo.collider == coneHitCollider)
             {
-                if (!inSight.Contains(collider))
+                if (!inSight.Contains(coneHitCollider))
                 {
-                    inSight.Add(collider);
-                    Debug.Log($"Sighted : {collider.gameObject.name}");
-                }
+                    inSight.Add(coneHitCollider);
+                    OnEnterVision.Invoke(this, new VisionEventArgs() { collider = coneHitCollider });
 
+                }
                 else
                 {
-                    lastInSight.Remove(collider);
+                    lastInSight.Remove(coneHitCollider);
                 }
             }
         }
@@ -49,8 +65,6 @@ public class Sight : MonoBehaviour
         {
             inSight.Remove(collider);
             Debug.Log($"No Longer seeing : {collider.gameObject.name}");
-
-
         }
     }
 
@@ -64,12 +78,9 @@ public class Sight : MonoBehaviour
                 Gizmos.DrawLine(transform.position, collider.transform.position);
             }
         }
-        
-        Gizmos.color = gizmocolor;
-        
+
+        Gizmos.color = Color.red;
         Gizmos.matrix = Matrix4x4.TRS(transform.position, transform.rotation, transform.lossyScale);
         Gizmos.DrawFrustum(Vector3.zero, angle, distance, .5f, aspect);
-
     }
-
 }
